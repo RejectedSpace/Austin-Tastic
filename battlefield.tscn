@@ -7,17 +7,17 @@
 [node name="Battlefield" type="Node2D"]
 
 [node name="Platform" parent="." instance=ExtResource("1_hy033")]
-position = Vector2(328, 340)
+position = Vector2(475, 415)
 
 [node name="Platform2" parent="." instance=ExtResource("1_hy033")]
-position = Vector2(576, 177)
+position = Vector2(712, 190)
 
 [node name="Platform3" parent="." instance=ExtResource("1_hy033")]
-position = Vector2(824, 340)
+position = Vector2(950, 415)
 
 [node name="Ground" parent="." instance=ExtResource("2_4y0t7")]
-position = Vector2(576, 512)
+position = Vector2(712, 640)
 scale = Vector2(3.2400007, 1)
 
 [node name="Player" parent="." instance=ExtResource("3_fxwnf")]
-position = Vector2(577, 322)
+position = Vector2(691, 554)

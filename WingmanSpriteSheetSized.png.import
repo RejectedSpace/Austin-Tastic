@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://edtc8kp2cwvk"
-path="res://.godot/imported/Nicks_wingman_sized.png-44b5318c7f96c84bf71dbb8cbae923cc.ctex"
+uid="uid://dwhai5c4moy8i"
+path="res://.godot/imported/WingmanSpriteSheetSized.png-614b07311301e0ec983f050a0937e8ba.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Nicks_wingman_sized.png"
-dest_files=["res://.godot/imported/Nicks_wingman_sized.png-44b5318c7f96c84bf71dbb8cbae923cc.ctex"]
+source_file="res://WingmanSpriteSheetSized.png"
+dest_files=["res://.godot/imported/WingmanSpriteSheetSized.png-614b07311301e0ec983f050a0937e8ba.ctex"]
 
 [params]
 

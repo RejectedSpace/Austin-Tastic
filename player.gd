@@ -1,66 +1,100 @@
 extends CharacterBody2D
 
+@onready var animation = $AnimatedSprite2D
 @onready var coyote_timer = $Timer
-@onready var jump_timer = $Timer2
+@onready var glitch_timer = $Timer2
 
-const MOVE_SPEED = 500
+const MAX_SPEED = 500
 const MOVE_ACCEL = 600
-const JUMP_SPEED = 350
+const JUMP_SPEED = 500
 const FRICTION = 1500
-const GRAV = 900
-const NUM_JUMPS = 2
-var jumps = NUM_JUMPS
-var was_on_floor = false
-var direction = 0
+const AIR_RESISTANCE = FRICTION*0.3
+const MAX_JUMPS = 2
+var jumps = MAX_JUMPS
+var glitchy = false
+var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _physics_process(delta: float):
-	handle_movement(delta)
-	handle_jump()
-	handle_gravity(delta)
+	apply_gravity(delta)
+	
+	var direction = Input.get_axis("left", "right")
 	handle_crouch()
+	handle_jump(direction)
+	handle_movement(direction, delta)
+	handle_air_movement(direction, delta)
+	apply_friction(direction, delta)
+	apply_air_resistance(direction, delta)
+	apply_animations(direction)
 	
+	var was_on_floor = is_on_floor()
 	move_and_slide()
-	
-	if position.y > 648:
-		position = Vector2(577, 322)
+	if was_on_floor and not is_on_floor() and jumps == MAX_JUMPS:
+		coyote_timer.start()
 
-func handle_movement(delta: float) -> void:
-	direction = Input.get_axis("left","right")
-	var slowdown = direction * velocity.x <= 0
-	var accel = FRICTION if slowdown else MOVE_ACCEL
-	if not is_on_floor() and slowdown:
-		accel *= .3
-		
-	if direction:
-		velocity.x = move_toward(velocity.x, MOVE_SPEED*direction, accel*delta)
-		$Sprite2D.scale.x = abs($Sprite2D.scale.x)*(-direction)
-		$Sprite2D.position.x = 0.5 + 11.5*direction
-	else:
-		velocity.x = move_toward(velocity.x, 0, accel*delta)
-
-func handle_jump() -> void:
-	if Input.is_action_just_pressed("jump") and jumps > 0:
-		velocity.y = -JUMP_SPEED
-		jumps -= 1;
-		if direction * velocity.x <= 0:
-			velocity.x = 0
-	
+func apply_gravity(delta: float) -> void:
 	if not is_on_floor():
-		if coyote_timer.is_stopped() and jumps == NUM_JUMPS:
-			coyote_timer.start(.3)
-	else:
-		jumps = NUM_JUMPS
+		velocity.y += gravity*delta
 
-func handle_gravity(delta: float) -> void:
-	if not is_on_floor():
-		if Input.is_action_pressed("jump") and velocity.y < -200:
-			velocity.y += GRAV*delta*.3
-		else:
-			velocity.y += GRAV*delta
+func handle_jump(direction: float) -> void:
+	if is_on_floor():
+		jumps = MAX_JUMPS
+	if is_on_floor() or not coyote_timer.is_stopped():
+		if Input.is_action_just_pressed("jump"):
+			jump(direction)
+	elif not is_on_floor():
+		if Input.is_action_just_released("jump") and velocity.y < JUMP_SPEED*0.5:
+			velocity.y = -JUMP_SPEED*0.5
+		if Input.is_action_just_pressed("jump") and jumps > 0:
+			jump(direction)
 
 func handle_crouch() -> void:
 	set_collision_mask_value(3, not Input.is_action_pressed("down"))
 
+func jump(direction: float) -> void:
+	velocity.y = -JUMP_SPEED
+	jumps -= 1
+	if direction * velocity.x <= 0:
+		velocity.x = 0
+
+func handle_movement(direction: float, delta: float) -> void:
+	if direction and is_on_floor():
+		velocity.x = move_toward(velocity.x, MAX_SPEED*direction, MOVE_ACCEL*delta)
+
+func handle_air_movement(direction: float, delta: float) -> void:
+	if direction and not is_on_floor():
+		velocity.x = move_toward(velocity.x, MAX_SPEED*direction, MOVE_ACCEL*delta)
+
+func apply_friction(direction: float, delta: float) -> void:
+	if not direction and is_on_floor():
+		velocity.x = move_toward(velocity.x, 0, FRICTION*delta)
+
+func apply_air_resistance(direction: float, delta: float) -> void:
+	if not direction and not is_on_floor():
+		velocity.x = move_toward(velocity.x, 0, AIR_RESISTANCE*delta)
+
+func apply_animations(direction: float) -> void:
+	if direction:
+		animation.flip_h = direction > 0
+		animation.play("Walk")
+	else:
+		animation.play("Idle")
+		easter()
+		if glitchy == true:
+			animation.play("Glitch")
+	if not is_on_floor():
+		if velocity.y <= 0:
+			animation.play("Rise")
+		if velocity.y > 0:
+			animation.play("Fall")
+
+func easter():
+	if randi() % 1000 == 69:
+		glitch_timer.start()
+		glitchy = true
+		
 func _on_timer_timeout() -> void:
-	if jumps == NUM_JUMPS:
+	if jumps == MAX_JUMPS:
 		jumps -= 1
+
+func _on_timer_2_timeout() -> void:
+	glitchy = false
