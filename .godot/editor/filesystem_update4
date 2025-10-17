@@ -1,3 +1,5 @@
-res://Player.tscn
-res://battlefield.tscn
 res://player.gd
+res://Player.tscn
+res://battlefield.gd
+res://ground.tscn
+res://battlefield.tscn
