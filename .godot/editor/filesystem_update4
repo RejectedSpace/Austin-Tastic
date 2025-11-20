@@ -1,5 +1,6 @@
-res://player.gd
+res://attack.gd
+res://attack.tscn
 res://Player.tscn
-res://battlefield.gd
-res://ground.tscn
+res://player.gd
 res://battlefield.tscn
+res://air_jump.tscn

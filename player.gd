@@ -4,14 +4,14 @@ extends CharacterBody2D
 @onready var coyote_timer = $CoyoteTimer
 @onready var glitch_timer = $GlitchTimer
 @onready var dash_timer = $DashTimer
-@onready var windup_timer = $WindupTimer
+@onready var startup_timer = $StartupTimer
 @onready var attack_timer = $AttackTimer
-@onready var cooldown_timer = $CooldownTimer
+@onready var lag_timer = $LagTimer
 
 const MAX_SPEED = 500
 const MOVE_ACCEL = 600
 const JUMP_SPEED = 650
-const FRICTION = MAX_SPEED * 3
+const FRICTION = MAX_SPEED*3
 const AIR_RESISTANCE = FRICTION*0.3
 const MAX_JUMPS = 2
 const AIR_JUMP_OFFSET = 50
@@ -19,6 +19,7 @@ var jumps = MAX_JUMPS
 var cooldown = false
 var attack = "dash"
 var glitchy = false
+var attacks = []
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var dash_direction: String
 var starting_position: Vector2
@@ -130,17 +131,25 @@ func changed_direction(direction: float) -> bool:
 	return direction * velocity.x < 0
 
 func handle_attack(direction: float) -> void:
-	if is_on_floor() and abs(velocity.x) > MAX_SPEED*0.5:
-		cooldown = true
-		velocity.y = -JUMP_SPEED*0.4
-		velocity.x = MAX_SPEED*direction*1.25
-		attack = "dash"
-		windup_timer.start(0.1)
+	if is_on_floor():
+		if abs(velocity.x) > MAX_SPEED*0.5:
+			cooldown = true
+			velocity.y = -JUMP_SPEED*0.4
+			velocity.x = MAX_SPEED*direction*1.25
+			attack = "dash"
+			startup_timer.start(0.1)
+		elif direction:
+			cooldown = true
+			attack = "left_smash"
+			startup_timer.start(0.5)
 
 func apply_animations(direction: float) -> void:
 	if cooldown:
-		if attack == "dash":
-			animation.play("Attack")
+		match attack:
+			"dash":
+				animation.play("DashAttack")
+			"left_smash":
+				animation.play("LeftSmash")
 	else:
 		if direction:
 			animation.flip_h = direction > 0
@@ -164,14 +173,14 @@ func easter():
 		glitch_timer.start()
 		glitchy = true
 
-func _on_timer_timeout() -> void:
+func _on_coyote_timer_timeout() -> void:
 	if jumps == MAX_JUMPS:
 		jumps -= 1
 
-func _on_timer_2_timeout() -> void:
+func _on_glitch_timer_timeout() -> void:
 	glitchy = false
 
-func _on_windup_timer_timeout() -> void:
+func _on_startup_timer_timeout() -> void:
 	match attack:
 		"dash":
 			$DashAttack.visible = true
@@ -181,9 +190,9 @@ func _on_attack_timer_timeout() -> void:
 	match attack:
 		"dash":
 			$DashAttack.visible = false
-			cooldown_timer.start(0.5)
+			lag_timer.start(0.5)
 
-func _on_cooldown_timer_timeout() -> void:
+func _on_lag_timer_timeout() -> void:
 	cooldown = false
-
+	
 signal air_jump
