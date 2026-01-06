@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://c5ance814rmro"]
+[gd_scene load_steps=30 format=3 uid="uid://c5ance814rmro"]
 
 [ext_resource type="Script" uid="uid://cymw7plyqljes" path="res://player.gd" id="1_kpjcp"]
 [ext_resource type="Texture2D" uid="uid://cypmdwl2ohus6" path="res://WingmanSpriteSheetSized.png" id="2_kpjcp"]
@@ -10,6 +10,18 @@ region = Rect2(408, 272, 128, 128)
 [sub_resource type="AtlasTexture" id="AtlasTexture_kne1u"]
 atlas = ExtResource("2_kpjcp")
 region = Rect2(544, 272, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cgsek"]
+atlas = ExtResource("2_kpjcp")
+region = Rect2(0, 272, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0pi4m"]
+atlas = ExtResource("2_kpjcp")
+region = Rect2(136, 272, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sg6sq"]
+atlas = ExtResource("2_kpjcp")
+region = Rect2(272, 272, 128, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e80uo"]
 atlas = ExtResource("2_kpjcp")
@@ -30,6 +42,38 @@ region = Rect2(136, 0, 128, 128)
 [sub_resource type="AtlasTexture" id="AtlasTexture_5ncpa"]
 atlas = ExtResource("2_kpjcp")
 region = Rect2(1088, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r3kul"]
+atlas = ExtResource("2_kpjcp")
+region = Rect2(136, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jatw7"]
+atlas = ExtResource("2_kpjcp")
+region = Rect2(1088, 272, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rv870"]
+atlas = ExtResource("2_kpjcp")
+region = Rect2(544, 136, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_efikj"]
+atlas = ExtResource("2_kpjcp")
+region = Rect2(680, 136, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_itxgx"]
+atlas = ExtResource("2_kpjcp")
+region = Rect2(816, 136, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h84ma"]
+atlas = ExtResource("2_kpjcp")
+region = Rect2(952, 136, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_47wu6"]
+atlas = ExtResource("2_kpjcp")
+region = Rect2(1088, 136, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2n1s8"]
+atlas = ExtResource("2_kpjcp")
+region = Rect2(1224, 136, 128, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wi0c6"]
 atlas = ExtResource("2_kpjcp")
@@ -62,10 +106,27 @@ animations = [{
 "texture": SubResource("AtlasTexture_kpjcp")
 }, {
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_kpjcp")
+}, {
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_kne1u")
 }],
 "loop": true,
 "name": &"DashAttack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cgsek")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0pi4m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sg6sq")
+}],
+"loop": true,
+"name": &"DownAttack",
 "speed": 5.0
 }, {
 "frames": [{
@@ -105,6 +166,45 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_r3kul")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jatw7")
+}],
+"loop": true,
+"name": &"Run",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rv870")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_efikj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_itxgx")
+}],
+"loop": true,
+"name": &"SideAttack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h84ma")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_47wu6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2n1s8")
+}],
+"loop": true,
+"name": &"UpAttack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_wi0c6")
 }, {
 "duration": 1.0,
@@ -140,7 +240,7 @@ script = ExtResource("1_kpjcp")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-16, -32)
 sprite_frames = SubResource("SpriteFrames_3tkgg")
-animation = &"DashAttack"
+animation = &"Run"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_vsh2u")
@@ -178,6 +278,11 @@ one_shot = true
 
 [node name="LagTimer" type="Timer" parent="."]
 process_callback = 0
+one_shot = true
+
+[node name="FallTimer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 0.3
 one_shot = true
 
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_coyote_timer_timeout"]
